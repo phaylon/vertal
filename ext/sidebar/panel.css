@@ -50,6 +50,10 @@ body {
   border-right: 1px solid #404040;
 }
 
+#tablist .tab.unvisited {
+  color: #a0a0a0;
+}
+
 #tablist .tab.changed, #pinlist .pin.changed {
   background-color: #252545;
 }

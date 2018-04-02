@@ -11,10 +11,10 @@ window.addEventListener('contextmenu', function (ev) {
 
 browser.tabs.onActivated.addListener(activated);
 browser.tabs.onUpdated.addListener(updated);
-browser.tabs.onReplaced.addListener(render);
-browser.tabs.onRemoved.addListener(render);
+browser.tabs.onReplaced.addListener(replaced);
+browser.tabs.onRemoved.addListener(removed);
 browser.tabs.onMoved.addListener(render);
-browser.tabs.onDetached.addListener(render);
+browser.tabs.onDetached.addListener(detached);
 browser.tabs.onAttached.addListener(render);
 browser.tabs.onCreated.addListener(render);
 
@@ -22,6 +22,7 @@ let EMPTY_ICON = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1
 
 let LAST_TITLE = {};
 let CHANGED = {};
+let VISITED = {};
 
 function getAllTabs() {
   return browser.tabs.query({
@@ -43,6 +44,24 @@ function getPinnedTabs() {
   });
 }
 
+function removeAssociated(id) {
+  delete CHANGED[id];
+  delete VISITED[id];
+  delete LAST_TITLE[id];
+}
+
+function replaced(id, info) {
+  removeAssociated(id);
+}
+
+function removed(id, info) {
+  removeAssociated(id);
+}
+
+function detached(id, info) {
+  removeAssociated(id);
+}
+
 function updated(id, change, tab) {
   if (!tab.active) {
     if (change.title) {
@@ -62,6 +81,7 @@ function updated(id, change, tab) {
 }
 
 function activated(info) {
+  VISITED[info.tabId] = true;
   delete CHANGED[info.tabId];
   render();
 }
@@ -246,6 +266,13 @@ function updateRow(row, tab) {
   }
   else {
     row.classList.remove("audible", "muted");
+  }
+
+  if (tab.discarded && !VISITED[tab.id]) {
+    row.classList.add("unvisited");
+  }
+  else {
+    row.classList.remove("unvisited");
   }
 
   let title_elems = row.getElementsByClassName("title");
