@@ -1,6 +1,14 @@
 
 document.addEventListener("DOMContentLoaded", render);
 
+document.oncontextmenu = function() {
+  return false;
+};
+
+window.addEventListener('contextmenu', function (ev) {
+    ev.preventDefault();
+}, false);
+
 browser.tabs.onActivated.addListener(activated);
 browser.tabs.onUpdated.addListener(updated);
 browser.tabs.onReplaced.addListener(render);
