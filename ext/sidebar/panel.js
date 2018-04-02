@@ -48,7 +48,7 @@ function createPin(tab) {
   return row;
 }
 
-function updatePin(row, tab) {
+function updateCommon(row, tab) {
   
   row.dataset.tab_id = tab.id;
   if (tab.active) {
@@ -72,6 +72,10 @@ function updatePin(row, tab) {
   else {
     favicon_elems[0].setAttribute("src", emptyIcon);
   }
+}
+
+function updatePin(row, tab) {
+  updateCommon(row, tab);
 }
 
 function updateTabs(tabs, name, create, update) {
@@ -153,21 +157,8 @@ function handleMiddleClick(row) {
 }
 
 function updateRow(row, tab) {
-  
-  row.dataset.tab_id = tab.id;
-  if (tab.active) {
-    row.classList.add("active");
-  }
-  else {
-    row.classList.remove("active");
-  }
 
-  if (tab.status && tab.status == "loading") {
-    row.classList.add("loading");
-  }
-  else {
-    row.classList.remove("loading");
-  }
+  updateCommon(row, tab);
 
   if (tab.audible) {
     let muted = false;
@@ -190,14 +181,6 @@ function updateRow(row, tab) {
 
   let line_elems = row.getElementsByClassName("line");
   line_elems[0].title = tab.title;
-
-  let favicon_elems = row.getElementsByClassName("favicon");
-  if (tab.favIconUrl) {
-    favicon_elems[0].setAttribute("src", tab.favIconUrl);
-  }
-  else {
-    favicon_elems[0].setAttribute("src", emptyIcon);
-  }
 }
 
 function createRow(tab) {
