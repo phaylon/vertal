@@ -1,0 +1,11 @@
+{
+  "manifest_version": 2,
+  "name": "Vertal",
+  "version": "1.0",
+  "description": "Vertical Tab List in the Sidebar",
+  "sidebar_action": {
+    "default_title" : "Vertal",
+    "default_panel": "sidebar/panel.html"
+  },
+  "permissions": ["storage", "tabs"]
+}

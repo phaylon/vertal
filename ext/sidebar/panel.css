@@ -1,0 +1,135 @@
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+  background-color: #101010;
+}
+
+body {
+  font: caption;
+  background-color: #101010;
+}
+
+#tablist {
+  padding-bottom: 4em;
+}
+
+#tablist .tab, #pinlist .pin {
+  background-color: #252525;
+}
+
+#tablist .tab {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #404040;
+  white-space: nowrap;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #d0d0d0;
+}
+
+#pinlist .pin {
+  padding: 0.5em;
+  display: inline-block;
+  border-bottom: 1px solid #404040;
+  border-right: 1px solid #404040;
+}
+
+#tablist .tab.loading, #pinlist .pin.loading {
+  background-color: #452525;
+}
+
+#tablist .tab:hover, #pinlist .pin:hover {
+  background-color: #404040;
+}
+
+#tablist .tab.loading:hover, #pinlist .pin.loading:hover {
+  background-color: #604040;
+}
+
+#tablist .flexicon {
+  margin-left: 0.5em;
+  filter: grayscale(100%);
+}
+
+#tablist .mutedicon {
+  font-weight: bold;
+  display: none;
+}
+
+#tablist .audibleicon {
+  font-weight: bold;
+  display: none;
+}
+
+#tablist .tab.muted .mutedicon {
+  display: inline;
+}
+
+#tablist .tab.muted .title {
+  font-weight: bold;
+}
+
+#tablist .tab.audible .audibleicon {
+  display: inline;
+}
+
+#tablist .tab.audible .title {
+  font-weight: bold;
+}
+
+#tablist .tab.active, #pinlist .pin.active {
+  background-color: #353535;
+}
+
+#tablist .tab.loading.active, #pinlist .pin.loading.active {
+  background-color: #553535;
+}
+
+#tablist .tab.active:hover, #pinlist .pin.active:hover {
+  background-color: #454545;
+}
+
+#tablist .tab.loading.active:hover, #pinlist .pin.loading.active:hover {
+  background-color: #654545;
+}
+
+#tablist .line {
+  vertical-align: middle;
+  line-height: 2em;
+  height: 100%;
+}
+
+#tablist .title {
+  margin-left: 0.5em;
+}
+
+#tablist .favicon {
+  width: 16px;
+  height: 16px;
+  display: inline;
+  vertical-align: middle;
+}
+
+#pinlist .favicon {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+}
+
+#footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2em;
+  color: #d0d0d0;
+  background-color: #303030;
+  text-align: center;
+  padding-top: 0.5em;
+}
