@@ -1,5 +1,5 @@
 
-document.addEventListener("DOMContentLoaded", render);
+document.addEventListener("DOMContentLoaded", setup);
 
 document.oncontextmenu = function() {
   return false;
@@ -23,6 +23,20 @@ let EMPTY_ICON = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1
 let LAST_TITLE = {};
 let CHANGED = {};
 let VISITED = {};
+let CONTEXT = null;
+
+function setup() {
+
+  let context_duplicate =
+    document.getElementById("context-duplicate");
+  let context_move_to_top =
+    document.getElementById("context-move-to-top");
+
+  context_duplicate.onclick = contextDuplicate;
+  context_move_to_top.onclick = contextMoveToTop;
+
+  render();
+}
 
 function getAllTabs() {
   return browser.tabs.query({
@@ -50,16 +64,40 @@ function removeAssociated(id) {
   delete LAST_TITLE[id];
 }
 
+function contextDuplicate() {
+  if (CONTEXT) {
+    browser.tabs.duplicate(Number(CONTEXT)).then((tab) => {
+      CONTEXT = null;
+      render();
+    });
+  }
+}
+
+function contextMoveToTop() {
+  getPinnedTabs().then((pins) => {
+    if (CONTEXT) {
+      let id = Number(CONTEXT);
+      browser.tabs.move(id, { index: pins.length }).then(() => {
+        CONTEXT = null;
+        render();
+      });
+    }
+  });
+}
+
 function replaced(id, info) {
   removeAssociated(id);
+  render();
 }
 
 function removed(id, info) {
   removeAssociated(id);
+  render();
 }
 
 function detached(id, info) {
   removeAssociated(id);
+  render();
 }
 
 function updated(id, change, tab) {
@@ -83,6 +121,7 @@ function updated(id, change, tab) {
 function activated(info) {
   VISITED[info.tabId] = true;
   delete CHANGED[info.tabId];
+  CONTEXT = null;
   render();
 }
 
@@ -90,6 +129,10 @@ function render() {
   getListedTabs().then(updateTabList);
   getPinnedTabs().then(updatePinList);
   getAllTabs().then(updateCounter);
+  if (!CONTEXT) {
+    let context = document.getElementById("context");
+    context.style.setProperty("display", "none");
+  }
 }
 
 function updateCounter(tabs) {
@@ -98,7 +141,7 @@ function updateCounter(tabs) {
 
 function updatePinList(tabs) {
 
-  updateTabs(tabs, "pinlist", createPin, updatePin);
+  updateTabs(tabs, "pinlist", createPin, updatePin, "pin");
 
   let pinlist = document.getElementById("pinlist");
   if (pinlist) {
@@ -115,7 +158,7 @@ function updatePinList(tabs) {
 
 function updateTabList(tabs) {
 
-  updateTabs(tabs, "tablist", createRow, updateRow);
+  updateTabs(tabs, "tablist", createRow, updateRow, "tab");
 }
 
 function createPin(tab) {
@@ -170,10 +213,10 @@ function updatePin(row, tab) {
   updateCommon(row, tab);
 }
 
-function updateTabs(tabs, name, create, update) {
+function updateTabs(tabs, name, create, update, child) {
 
   let list = document.getElementById(name);
-  let rows = list.childNodes;
+  let rows = list.getElementsByClassName(child);
 
   tabs.forEach((tab, index) => {
     let row = rows[index];
@@ -183,6 +226,7 @@ function updateTabs(tabs, name, create, update) {
     else {
       let new_row = create(tab);
       list.appendChild(new_row);
+      update(new_row, tab);
     }
   });
 
@@ -202,6 +246,9 @@ function handleMouseUp(ev) {
         break;
       case 1:
         handleMiddleClick(this);
+        break;
+      case 2:
+        handleRightClick(this);
         break;
     }
   }
@@ -248,6 +295,19 @@ function handleMiddleClick(row) {
   }
 }
 
+function handleRightClick(row) {
+  let id = row.dataset.tab_id;
+  if (id) {
+    if (CONTEXT && CONTEXT == id) {
+      CONTEXT = null;
+    }
+    else {
+      CONTEXT = id;
+    }
+    render();
+  }
+}
+
 function updateRow(row, tab) {
 
   updateCommon(row, tab);
@@ -280,6 +340,12 @@ function updateRow(row, tab) {
 
   let line_elems = row.getElementsByClassName("line");
   line_elems[0].title = tab.title;
+
+  if (CONTEXT && CONTEXT == tab.id) {
+    let context = document.getElementById("context");
+    context.style.setProperty("display", "block");
+    row.insertAdjacentElement("afterend", context);
+  }
 }
 
 function createRow(tab) {
@@ -312,8 +378,6 @@ function createRow(tab) {
   line.appendChild(title);
 
   row.appendChild(line);
-
-  updateRow(row, tab);
 
   return row;
 }

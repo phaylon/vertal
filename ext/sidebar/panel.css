@@ -13,7 +13,7 @@ body {
 }
 
 #tablist {
-  padding-bottom: 4em;
+  padding-bottom: 3em;
 }
 
 #pinlist {
@@ -150,4 +150,24 @@ body {
   background-color: #303030;
   text-align: center;
   padding-top: 0.5em;
+}
+
+#context {
+  display: none;
+  z-index: 400;
+  background-color: #151515;
+  padding-top: 0.4em;
+  padding-bottom: 0.4em;
+}
+
+#context li {
+  margin-bottom: 0.2em;
+}
+
+#context .option:hover {
+  text-decoration: underline;
+}
+
+#context, #context a {
+  color: #d0d0d0;
 }
