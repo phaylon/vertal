@@ -13,7 +13,7 @@ browser.tabs.onCreated.addListener(render);
 let emptyIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
 function getListedTabs() {
-  return browser.tabs.query({ currentWindow: true });
+  return browser.tabs.query({ currentWindow: true, pinned: false });
 }
 
 function getPinnedTabs() {
@@ -26,10 +26,24 @@ function render() {
 }
 
 function updatePinList(tabs) {
+
   updateTabs(tabs, "pinlist", createPin, updatePin);
+
+  let pinlist = document.getElementById("pinlist");
+  if (pinlist) {
+
+    let rect = pinlist.getBoundingClientRect();
+    let height = Math.round(rect.height);
+    let tablist = document.getElementById("tablist");
+
+    if (tablist) {
+      tablist.style.setProperty("margin-top", "" + height + "px");
+    }
+  }
 }
 
 function updateTabList(tabs) {
+
   updateTabs(tabs, "tablist", createRow, updateRow);
 }
 

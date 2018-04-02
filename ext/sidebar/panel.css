@@ -16,6 +16,15 @@ body {
   padding-bottom: 4em;
 }
 
+#pinlist {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #101010;
+  z-index: 500;
+}
+
 #tablist .tab, #pinlist .pin {
   background-color: #252525;
 }
@@ -31,6 +40,7 @@ body {
   white-space: nowrap;
   text-overflow: ellipsis;
   color: #d0d0d0;
+  z-index: 200;
 }
 
 #pinlist .pin {
