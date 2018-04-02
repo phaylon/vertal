@@ -1,8 +1,8 @@
 
 document.addEventListener("DOMContentLoaded", render);
 
-browser.tabs.onActivated.addListener(render);
-browser.tabs.onUpdated.addListener(render);
+browser.tabs.onActivated.addListener(activated);
+browser.tabs.onUpdated.addListener(updated);
 browser.tabs.onReplaced.addListener(render);
 browser.tabs.onRemoved.addListener(render);
 browser.tabs.onMoved.addListener(render);
@@ -10,19 +10,62 @@ browser.tabs.onDetached.addListener(render);
 browser.tabs.onAttached.addListener(render);
 browser.tabs.onCreated.addListener(render);
 
-let emptyIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+let EMPTY_ICON = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+
+let LAST_TITLE = {};
+let CHANGED = {};
+
+function getAllTabs() {
+  return browser.tabs.query({
+    currentWindow: true,
+  });
+}
 
 function getListedTabs() {
-  return browser.tabs.query({ currentWindow: true, pinned: false });
+  return browser.tabs.query({
+    currentWindow: true,
+    pinned: false
+  });
 }
 
 function getPinnedTabs() {
-  return browser.tabs.query({ currentWindow: true, pinned: true });
+  return browser.tabs.query({
+    currentWindow: true,
+    pinned: true
+  });
+}
+
+function updated(id, change, tab) {
+  if (!tab.active) {
+    if (change.title) {
+      if (LAST_TITLE[id]) {
+        if (change.title != LAST_TITLE[id]) {
+          LAST_TITLE[id] = change.title;
+          CHANGED[id] = true;
+        }
+      }
+      else {
+        LAST_TITLE[id] = change.title;
+        CHANGED[id] = true;
+      }
+    }
+  }
+  render();
+}
+
+function activated(info) {
+  delete CHANGED[info.tabId];
+  render();
 }
 
 function render() {
   getListedTabs().then(updateTabList);
   getPinnedTabs().then(updatePinList);
+  getAllTabs().then(updateCounter);
+}
+
+function updateCounter(tabs) {
+  document.getElementById("footer").textContent = "" + tabs.length;
 }
 
 function updatePinList(tabs) {
@@ -84,7 +127,14 @@ function updateCommon(row, tab) {
     favicon_elems[0].setAttribute("src", tab.favIconUrl);
   }
   else {
-    favicon_elems[0].setAttribute("src", emptyIcon);
+    favicon_elems[0].setAttribute("src", EMPTY_ICON);
+  }
+
+  if (CHANGED[tab.id]) {
+    row.classList.add("changed");
+  }
+  else {
+    row.classList.remove("changed");
   }
 }
 

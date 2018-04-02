@@ -50,6 +50,10 @@ body {
   border-right: 1px solid #404040;
 }
 
+#tablist .tab.changed, #pinlist .pin.changed {
+  background-color: #252545;
+}
+
 #tablist .tab.loading, #pinlist .pin.loading {
   background-color: #452525;
 }
