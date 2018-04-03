@@ -9,6 +9,8 @@ window.addEventListener('contextmenu', function (ev) {
     ev.preventDefault();
 }, false);
 
+window.onresize = resized;
+
 browser.tabs.onActivated.addListener(activated);
 browser.tabs.onUpdated.addListener(updated);
 browser.tabs.onReplaced.addListener(replaced);
@@ -24,6 +26,7 @@ let LAST_TITLE = {};
 let CHANGED = {};
 let VISITED = {};
 let CONTEXT = null;
+let PIN_HEIGHT = 0;
 
 function setup() {
 
@@ -36,6 +39,17 @@ function setup() {
   context_move_to_top.onclick = contextMoveToTop;
 
   render();
+}
+
+function resized() {
+
+  let pinlist = document.getElementById("pinlist");
+  let rect = pinlist.getBoundingClientRect();
+
+  if (!PIN_HEIGHT || PIN_HEIGHT != rect.height) {
+    PIN_HEIGHT = rect.height;
+    render();
+  }
 }
 
 function getAllTabs() {
