@@ -115,19 +115,18 @@ function detached(id, info) {
 }
 
 function updated(id, change, tab) {
-  if (!tab.active) {
-    if (change.title) {
-      if (LAST_TITLE[id]) {
-        if (change.title != LAST_TITLE[id]) {
-          LAST_TITLE[id] = change.title;
-          CHANGED[id] = true;
-        }
-      }
-      else {
-        LAST_TITLE[id] = change.title;
+  if (change.title) {
+    if (LAST_TITLE[id]) {
+      if (!tab.active && change.title != LAST_TITLE[id]) {
         CHANGED[id] = true;
       }
     }
+    else {
+      if (!tab.active) {
+        CHANGED[id] = true;
+      }
+    }
+    LAST_TITLE[id] = change.title;
   }
   render();
 }
