@@ -66,6 +66,10 @@ body {
   background-color: #404040;
 }
 
+#tablist .tab.changed:hover, #pinlist .pin.changed:hover {
+  background-color: #404060;
+}
+
 #tablist .tab.loading:hover, #pinlist .pin.loading:hover {
   background-color: #604040;
 }
