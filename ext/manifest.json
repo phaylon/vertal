@@ -7,5 +7,5 @@
     "default_title" : "Vertal",
     "default_panel": "sidebar/panel.html"
   },
-  "permissions": ["storage", "tabs"]
+  "permissions": ["tabs"]
 }
