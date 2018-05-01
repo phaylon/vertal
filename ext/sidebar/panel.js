@@ -27,6 +27,7 @@ let CHANGED = {};
 let VISITED = {};
 let CONTEXT = null;
 let PIN_HEIGHT = 0;
+let BROKEN_FAVICONS = {};
 
 function setup() {
 
@@ -209,7 +210,10 @@ function updateCommon(row, tab) {
   let favicon_elems = row.getElementsByClassName("favicon");
   if (tab.favIconUrl) {
     let current = favicon_elems[0].getAttribute("src");
-    if (current != tab.favIconUrl) {
+    if (BROKEN_FAVICONS[tab.favIconUrl]) {
+      favicon_elems[0].setAttribute("src", EMPTY_ICON);
+    }
+    else if (current != tab.favIconUrl) {
       favicon_elems[0].setAttribute("src", tab.favIconUrl);
     }
   }
@@ -254,7 +258,9 @@ function updateTabs(tabs, name, create, update, child) {
 }
 
 function handleFavIconError(ev) {
+  let src = this.getAttribute("src");
   this.setAttribute("src", EMPTY_ICON);
+  BROKEN_FAVICONS[src] = true;
 }
 
 function handleMouseUp(ev) {
