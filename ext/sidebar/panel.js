@@ -208,7 +208,10 @@ function updateCommon(row, tab) {
 
   let favicon_elems = row.getElementsByClassName("favicon");
   if (tab.favIconUrl) {
-    favicon_elems[0].setAttribute("src", tab.favIconUrl);
+    let current = favicon_elems[0].getAttribute("src");
+    if (current != tab.favIconUrl) {
+      favicon_elems[0].setAttribute("src", tab.favIconUrl);
+    }
   }
   else {
     favicon_elems[0].setAttribute("src", EMPTY_ICON);
@@ -248,6 +251,10 @@ function updateTabs(tabs, name, create, update, child) {
     rows[tabs.length + remove - 1].remove();
     remove = remove - 1;
   }
+}
+
+function handleFavIconError(ev) {
+  this.setAttribute("src", EMPTY_ICON);
 }
 
 function handleMouseUp(ev) {
@@ -372,6 +379,7 @@ function createRow(tab) {
 
   let favicon = document.createElement("img");
   favicon.classList.add("favicon");
+  favicon.onerror = handleFavIconError;
   line.appendChild(favicon);
 
   let audible = document.createElement("span");
