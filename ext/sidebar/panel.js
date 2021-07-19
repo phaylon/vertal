@@ -308,6 +308,14 @@ function handleLeftClick(row, ev) {
     else if (isClickInIcon(row, "mutedicon", ev)) {
       browser.tabs.update(Number(id), { muted: false });
     }
+    else if (isClickInIcon(row, "favicon", ev)) {
+      if (row.classList.contains("pin")) {
+        browser.tabs.update(Number(id), { active: true });
+      }
+      else {
+        browser.tabs.remove(Number(id));
+      }
+    }
     else {
       browser.tabs.update(Number(id), { active: true });
     }
